@@ -1,8 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
 #include <FastLED.h>
-#include "TCDateTime.h"
 #include "Config.h"
 // временное решение для некоторых переменных, посзднее надо веруть их в main.cpp
 #include "core/Logger/SerialLogger.h"
@@ -40,13 +38,3 @@ extern bool rainbowChase;
 
 // Timer
 extern unsigned long previousTime;
-
-
-// ==================== DateTime Structure ====================
-
-
-// ==================== Time Utilities ====================
-bool isLeapYear(int y);
-bool isDateValid(int M, int D, int Y, int h, int m);
-TCDateTime parseDateTime(const String& s);
-void convertTo12Hour(int h24, int& h12out, bool& pm);

@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "Config.h"
 #include "Globals.h"
+#include "TimeUtils.h"
 #include "TimeCircuits.h"
 #ifdef USE_RTC_DS3231
   // сам модуль для установки даты использовать не буду, т.к. он ограничен 2000-м годом, буду устанавливать в нем дату, например 01.01.2020 00:00:00 и от неё считать тики модуля

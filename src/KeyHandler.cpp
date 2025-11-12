@@ -6,6 +6,7 @@
 #include "KeyHandler.h"
 #include "IRHandler.h"
 #include "TimeCircuits.h"
+#include "TimeUtils.h"
 
 // KEYPAD_AZ_DELIVERY Keypad pins (10 pin)
 // NA C1 C2 C3 C4 R1 R2 R3 R4 NA
