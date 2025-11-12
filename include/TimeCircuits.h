@@ -63,7 +63,7 @@ public:
   // Getters для Present Time
   TCDateTime getPresTime() const { return presT; }
   bool isPresValid() const { return presT.valid; }
-  
+
   // Setters для Present Time
   void setPresTime(const TCDateTime& dt);
   void clearPresTime();
@@ -81,7 +81,8 @@ public:
   void timeTravel();
   void unlockJump() { jumpLock = false; }
   bool isJumpLocked() const { return jumpLock; }
-  
+
+  void syncPresTimeFromRTC(); // синхронизируем на время из RTC модуля
   // Обновление дисплея
   void refresh();
 };

@@ -13,7 +13,7 @@
 // #include <IRremote.hpp>
 // #include <SoftwareSerial.h>
 // #include <DFRobotDFPlayerMini.h>
-// #include "TemperatureHandler.h"
+#include "TemperatureHandler.h"
 
 // Логгер
 SerialLogger logger;
@@ -53,7 +53,7 @@ void setup() {
 
     timeCircuits.init();
     initKeypad();
-    // initTemperatureSensor();
+    initTemperatureSensor();
 
     logger.println(F("Setup Completed."));
 
@@ -68,6 +68,6 @@ void loop() {
     handleKey();
     handleSerial();
     handleAnimations();
-    // handleTemperatureSpeed();
+    handleTemperatureSpeed();
     timeCircuits.update(); 
 }

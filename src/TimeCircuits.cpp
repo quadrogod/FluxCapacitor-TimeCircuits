@@ -279,35 +279,9 @@ void TimeCircuits::updatePresentTime() {
           presT.h = rtcNow.hour();
           presT.min = rtcNow.minute();
           presT.valid = true;
-          
-          // ДОБАВИТЬ: Проверка выхода за границу 2099
-          if (presT.y > 2099) {
-            // Переключение в режим таймера
-            useRTCForDate = false;
-            rtc.adjust(DateTime(2020, 1, 1, 0, 0, 0));
-            
-            Serial.println(F("Year > 2099: Switched to timer-only mode"));
-            Serial.print(F("Present Time: "));
-            Serial.println(presT.toText());
-          }
         } else {
           // ===== РЕЖИМ ТАЙМЕРА: Только инкремент нашей даты =====
           incrementTime(presT);
-          
-          // ДОБАВИТЬ: Проверка входа в диапазон 2000-2099
-          if (presT.y >= 2000 && presT.y <= 2099) {
-            // Переключение в режим полной даты
-            useRTCForDate = true;
-            
-            // Синхронизация RTC с новой датой
-            DateTime rtcTime(presT.y, presT.m, presT.d, presT.h, presT.min, 0);
-            rtc.adjust(rtcTime);
-            lastRTCMinute = presT.min;
-            
-            Serial.println(F("Year 2000-2099: Switched to full date mode"));
-            Serial.print(F("RTC synchronized to: "));
-            Serial.println(presT.toText());
-          }
         }
         
         refresh();
@@ -411,10 +385,22 @@ void TimeCircuits::timeTravel() {
     return;
   }
   
-  setLastTime(presT);
-  setPresTime(destT);
+  lastT = presT;
+  presT = destT;
 
   tMin = millis();
+
+  #ifdef USE_RTC_DS3231
+    // НЕ меняем RTC при прыжке! Только синхронизируем lastRTCMinute
+    if (rtc.begin()) {
+      DateTime rtcNow = rtc.now();
+      lastRTCMinute = rtcNow.minute();
+      //
+      useRTCForDate = false; // После прыжка всегда режим таймера!
+      Serial.println(F("RTC: Timer mode (after jump)"));
+
+    }
+  #endif
 
   jumpLock = true;
   refresh();
@@ -476,6 +462,41 @@ void TimeCircuits::init() {
   
   refresh();
   Serial.println(F("Time Circuits Ready"));
+}
+
+void TimeCircuits::syncPresTimeFromRTC() {
+  #ifdef USE_RTC_DS3231
+    if (rtc.begin()) {
+      DateTime rtcNow = rtc.now();
+
+      // Проверяем валидность времени в RTC
+      if (rtcNow.isValid() && rtcNow.year() >= 2000 && rtcNow.year() <= 2099) {
+        // Устанавливаем время из RTC
+        presT.y = rtcNow.year();
+        presT.m = rtcNow.month();
+        presT.d = rtcNow.day();
+        presT.h = rtcNow.hour();
+        presT.min = rtcNow.minute();
+        presT.valid = true;
+
+        useRTCForDate = true;
+        lastRTCMinute = rtcNow.minute();
+        tMin = millis();
+
+        refresh();
+
+        Serial.println(F("Present Time synced from RTC"));
+        Serial.print(F("Current time: "));
+        Serial.println(presT.toText());
+      } else {
+        Serial.println(F("RTC time invalid or out of range (2000-2099)"));
+      }
+    } else {
+      Serial.println(F("RTC not found!"));
+    }
+  #else
+    Serial.println(F("⚠️  RTC not enabled (USE_RTC_DS3231 not defined)"));
+  #endif
 }
 
 /* ==================== Main Update Loop ==================== */

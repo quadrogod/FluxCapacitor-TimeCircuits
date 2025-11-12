@@ -87,6 +87,17 @@ void handleDateInput(char key) {
     Serial.println(F("\nReset"));
     return;
   }
+
+  if (key == 'P') {
+      if (inputMode == MODE_SET_PRES && inDigits.length() == 0) {
+          timeCircuits.syncPresTimeFromRTC(); // синхронизируем Present Time
+          Serial.println();
+          Serial.println(F("Present Time Synchronized."));
+          inputMode = MODE_NONE;
+          return;
+      }
+    return;
+  }
   
   if (key == 'E') {
     if (inDigits.length() != 12) {
