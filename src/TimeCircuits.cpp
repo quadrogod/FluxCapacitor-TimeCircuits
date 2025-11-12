@@ -1,13 +1,8 @@
-// TimeCircuits.cpp
 #include <Arduino.h>
 #include "Config.h"
 #include "Globals.h"
 #include "TimeUtils.h"
 #include "TimeCircuits.h"
-#ifdef USE_RTC_DS3231
-  // сам модуль для установки даты использовать не буду, т.к. он ограничен 2000-м годом, буду устанавливать в нем дату, например 01.01.2020 00:00:00 и от неё считать тики модуля
-  #include <RTClib.h>
-#endif
 
 /* ==================== Segment Patterns ==================== */
 enum {D0,D1,D2,D3,D4,D5,D6,D7,D8,D9,D_MINUS,D_BLANK,
@@ -265,32 +260,32 @@ int TimeCircuits::getDaysInMonth(int month, int year) {
 void TimeCircuits::updatePresentTime() {
   if (!presT.valid) return;
 
-  #ifdef USE_RTC_DS3231
-    if (rtc.begin()) {
-      DateTime rtcNow = rtc.now();
-      uint8_t currentMinute = rtcNow.minute();
-      
-      if (currentMinute != lastRTCMinute) {
-        lastRTCMinute = currentMinute;
-        
-        if (useRTCForDate) {
-          // ===== РЕЖИМ ПОЛНОЙ ДАТЫ: Читаем время напрямую из RTC =====
-          presT.y = rtcNow.year();
-          presT.m = rtcNow.month();
-          presT.d = rtcNow.day();
-          presT.h = rtcNow.hour();
-          presT.min = rtcNow.minute();
-          presT.valid = true;
-        } else {
-          // ===== РЕЖИМ ТАЙМЕРА: Только инкремент нашей даты =====
-          incrementTime(presT);
-        }
-        
-        refresh();
+  if (rtcProvider->isAvailable()) {
+    DateTime rtcNow = rtcProvider->now();
+    uint8_t currentMinute = rtcNow.minute();
+    //
+    if (currentMinute != lastRTCMinute) {
+      lastRTCMinute = currentMinute;
+
+      if (useRTCForDate) {
+        // ===== РЕЖИМ ПОЛНОЙ ДАТЫ: Читаем время напрямую из RTC =====
+        presT.y = rtcNow.year();
+        presT.m = rtcNow.month();
+        presT.d = rtcNow.day();
+        presT.h = rtcNow.hour();
+        presT.min = rtcNow.minute();
+        presT.valid = true;
+      } else {
+        // ===== РЕЖИМ ТАЙМЕРА: Только инкремент нашей даты =====
+        incrementTime(presT);
       }
-      return;
+      //
+      refresh();
     }
-  #endif
+    return;
+  }
+
+  // иначе продолжаем считать на millis()
   
   unsigned long ms = millis();
   
@@ -325,36 +320,29 @@ void TimeCircuits::setPresTime(const TCDateTime& dt) {
   presT = dt;
   tMin = millis();
 
-  #ifdef USE_RTC_DS3231
-    if (rtc.begin()) {
-      // Проверяем, попадает ли дата в диапазон RTC (2000-2099)
-      if (dt.y >= 2000 && dt.y <= 2099) {
-        // ===== Дата в диапазоне: используем RTC полностью =====
-        useRTCForDate = true;
-        
-        // Устанавливаем точную дату в RTC
-        DateTime rtcTime(dt.y, dt.m, dt.d, dt.h, dt.min, 0);
-        rtc.adjust(rtcTime);
-        lastRTCMinute = dt.min;
-        
-        logger->println(F("RTC: Full date mode (2000-2099)"));
-        logger->print(F("Synchronized to: "));
-        logger->println(dt.toText());
-      } else {
-        // ===== Дата вне диапазона: используем RTC только как таймер =====
-        useRTCForDate = false;
-        
-        // Устанавливаем фиксированную дату в RTC (для тиков)
-        rtc.adjust(DateTime(2020, 1, 1, 0, 0, 0));
-        DateTime rtcNow = rtc.now();
-        lastRTCMinute = rtcNow.minute();
-        
-        logger->println(F("RTC: Timer-only mode (year < 2000 or > 2099)"));
-        logger->print(F("Present Time: "));
-        logger->println(dt.toText());
-      }
+  if (rtcProvider->isAvailable()) {
+    // if (dt.y >= 2000 && dt.y <= 2099) {
+    if (rtcProvider->isSupported(dt)) {
+      // ===== Дата в диапазоне: используем RTC полностью =====
+      useRTCForDate = true;
+
+      // Устанавливаем точную дату в RTC
+      rtcProvider->setTime(dt);
+      lastRTCMinute = dt.min;
+
+      logger->println(F("RTC: Full date mode"));
+      logger->print(F("Synchronized to: "));
+      logger->println(dt.toText());
+    } else {
+      // ===== Дата вне диапазона: используем RTC только как таймер =====
+      useRTCForDate = false;
+      lastRTCMinute = rtcProvider->now().minute();
+
+      logger->println(F("RTC: Timer-only mode (year < 2000 or > 2099)"));
+      logger->print(F("Present Time: "));
+      logger->println(dt.toText());
     }
-  #endif
+  }
 
   refresh();
   logger->print(F("Present Time set: "));
@@ -392,17 +380,12 @@ void TimeCircuits::timeTravel() {
 
   tMin = millis();
 
-  #ifdef USE_RTC_DS3231
-    // НЕ меняем RTC при прыжке! Только синхронизируем lastRTCMinute
-    if (rtc.begin()) {
-      DateTime rtcNow = rtc.now();
-      lastRTCMinute = rtcNow.minute();
-      //
-      useRTCForDate = false; // После прыжка всегда режим таймера!
-      logger->println(F("RTC: Timer mode (after jump)"));
-
-    }
-  #endif
+  if (rtcProvider->isAvailable()) {
+    lastRTCMinute = rtcProvider->now().minute();
+    //
+    useRTCForDate = false; // После прыжка всегда режим таймера!
+    logger->println(F("RTC: Timer mode (after jump)"));
+  }
 
   jumpLock = true;
   refresh();
@@ -439,68 +422,46 @@ void TimeCircuits::init() {
     pinMode(ledPins[i], OUTPUT);
   }
 
-  #ifdef USE_RTC_DS3231
-    // Инициализация RTC модуля
-    if (!rtc.begin()) {
-      logger->println(F("RTC DS3231 not found!"));
-      logger->println(F("Falling back to millis() mode"));
-    } else {
-      logger->println(F("RTC DS3231 initialized"));
-      
-      // Проверка потери питания
-      if (rtc.lostPower()) {
-        logger->println(F("RTC lost power, setting default time"));
-        // Установить время компиляции как начальное (опционально)
-        // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-        // rtc.adjust(DateTime(F("Oct 26 1985"), F("22:10:00"))); // не будем устанавливать никакую дату, пусть берет по умолчанию какая будет
-      }
-
-      DateTime now = rtc.now();
-      lastRTCMinute = now.minute();
+  if (rtcProvider && rtcProvider->init()) {
+    if (rtcProvider->isAvailable()) {
+      useRTCForDate = true;
+      lastRTCMinute = rtcProvider->now().minute();
+      //
+      logger->println(F("RTC инициализирован"));
     }
-  #else
-    logger->println(F("Using millis() for timekeeping"));
-  #endif
+  } else {
+    logger->println(F("RTC недоступен, используется millis()"));
+  }
   
   refresh();
   logger->println(F("Time Circuits Ready"));
 }
 
 void TimeCircuits::syncPresTimeFromRTC() {
-  #ifdef USE_RTC_DS3231
-    if (rtc.begin()) {
-      DateTime rtcNow = rtc.now();
+  if (rtcProvider->isAvailable()) {
+    DateTime rtcNow = rtcProvider->now();
+    // по идее тут можно проверить, если дата не валидная по какой-то причине, то заменить на --- -- ---- --:--
+    // но если модуль стоит, то, полагаю, она всегда будет валидная, хоть и в ноль сброшенная)
+    presT.y = rtcNow.year();
+    presT.m = rtcNow.month();
+    presT.d = rtcNow.day();
+    presT.h = rtcNow.hour();
+    presT.min = rtcNow.minute();
+    presT.valid = true;
+    //
+    useRTCForDate = true;
+    lastRTCMinute = rtcNow.minute();
+    tMin = millis();
 
-      // Проверяем валидность времени в RTC
-      if (rtcNow.isValid()) {
-        // Устанавливаем время из RTC
-        presT.y = rtcNow.year();
-        presT.m = rtcNow.month();
-        presT.d = rtcNow.day();
-        presT.h = rtcNow.hour();
-        presT.min = rtcNow.minute();
-        presT.valid = true;
+    refresh();
 
-        useRTCForDate = true;
-        lastRTCMinute = rtcNow.minute();
-        tMin = millis();
-
-        refresh();
-
-        logger->println(F("Present Time synced from RTC"));
-        logger->print(F("Current time: "));
-        logger->println(presT.toText());
-      } else {
-        presT = TCDateTime();
-        refresh();
-        logger->println(F("\r\nRTC time invalid"));
-      }
-    } else {
-      logger->println(F("RTC not found!"));
-    }
-  #else
-    logger->println(F("⚠️  RTC not enabled (USE_RTC_DS3231 not defined)"));
-  #endif
+    logger->println(F("Present Time synced from RTC"));
+    logger->print(F("Current time: "));
+    logger->println(presT.toText());
+  } else {
+    logger->println(F("RTC not available!"));
+    presT = TCDateTime();
+  }
 }
 
 /* ==================== Main Update Loop ==================== */

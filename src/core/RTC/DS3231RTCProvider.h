@@ -99,6 +99,13 @@ public:
         // мы просто будем считать тики изменения минуты, не более.
         return (dt.y >= 2000) && (dt.y <= 2099);
     }
+
+    DateTime now() override {
+        #ifdef USE_RTC_DS3231
+            if (!available) return DateTime(2000, 1, 1, 0, 0, 0);
+        #endif
+        return rtc.now();
+    }
 };
 
 #endif //FLUXCAPACITOR_TIMECIRCUITS_DS3231RTCPROVIDER_H

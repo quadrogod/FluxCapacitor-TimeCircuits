@@ -5,6 +5,7 @@
 #ifndef FLUXCAPACITOR_TIMECIRCUITS_IRTCPROVIDER_H
 #define FLUXCAPACITOR_TIMECIRCUITS_IRTCPROVIDER_H
 
+#include <RTClib.h>
 #include "TCDateTime.h"
 
 class IRTCProvider {
@@ -17,6 +18,7 @@ public:
     virtual void setTime(const TCDateTime& dt) = 0;
     virtual bool hasMinuteTick() = 0;
     virtual bool isSupported(const TCDateTime& dt) = 0;
+    virtual DateTime now() = 0;
 };
 
 #endif //FLUXCAPACITOR_TIMECIRCUITS_IRTCPROVIDER_H
