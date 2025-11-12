@@ -3,17 +3,21 @@
 #include "Config.h"
 #include "Globals.h"
 #include "core/Logger/SerialLogger.h"
+#include "core/Sensor/TemperatureSensor.h"
 #include "IRHandler.h"
 #include "KeyHandler.h"
-#include "TemperatureHandler.h"
 #include "SerialHandler.h"
 #include "Animations.h"
 #include "TimeCircuits.h"
 // #include <IRremote.hpp>
 // #include <SoftwareSerial.h>
 // #include <DFRobotDFPlayerMini.h>
+// #include "TemperatureHandler.h"
 
+// Логгер
 SerialLogger logger;
+// Сенсор
+TemperatureSensor tempSensor;
 
 void setup() {
     pinMode(SINGLE_LED_PIN, OUTPUT);
@@ -46,7 +50,7 @@ void setup() {
 
     timeCircuits.init();
     initKeypad();
-    initTemperatureSensor();
+    // initTemperatureSensor();
 
     logger.println(F("Setup Completed."));
 
@@ -61,6 +65,6 @@ void loop() {
     handleKey();
     handleSerial();
     handleAnimations();
-    handleTemperatureSpeed();
+    // handleTemperatureSpeed();
     timeCircuits.update(); 
 }
