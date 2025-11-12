@@ -1,26 +1,28 @@
 #include <Arduino.h>
 #include <FastLED.h>
-// #include <IRremote.hpp>
-// #include <SoftwareSerial.h>
-// #include <DFRobotDFPlayerMini.h>
-
 #include "Config.h"
 #include "Globals.h"
+#include "core/Logger/SerialLogger.h"
 #include "IRHandler.h"
 #include "KeyHandler.h"
 #include "TemperatureHandler.h"
 #include "SerialHandler.h"
 #include "Animations.h"
 #include "TimeCircuits.h"
+// #include <IRremote.hpp>
+// #include <SoftwareSerial.h>
+// #include <DFRobotDFPlayerMini.h>
+
+SerialLogger logger;
 
 void setup() {
     pinMode(SINGLE_LED_PIN, OUTPUT);
-
     Serial.begin(115200);
-    Serial.println(F("\n=== Flux Capacitor & Time Circuits ==="));
-    Serial.println(F("\nVersion: 1.24"));
 
-    Serial.println(F("\n=== Setup Starting ==="));
+    logger.println(F("=== Flux Capacitor & Time Circuits ==="));
+    logger.println(F("Version: 1.25"));
+
+    logger.println(F("=== Setup Starting ==="));
 
     // ---------------- DFPlayer (commented for Wokwi) ----------------
     // mySoftwareSerial.begin(9600);
@@ -34,7 +36,7 @@ void setup() {
 
     // ---------------- IR Receiver ----------------
     initIR();
-    Serial.println(F("IR Receiver Ready."));
+    logger.println(F("IR Receiver Ready."));
 
     // ---------------- LED Setup ----------------
     FastLED.addLeds<WS2812B, DATA_RING_PIN, GRB>(leds, NUM_LEDS);
@@ -46,12 +48,12 @@ void setup() {
     initKeypad();
     initTemperatureSensor();
 
-    Serial.println(F("Setup Completed.\n"));
+    logger.println(F("Setup Completed."));
 
     // запускаем свет
     resetModes();   
     setMovieChaseSimple();
-    Serial.println(F("Movie Chase Simple activated"));    
+    logger.println(F("Movie Chase Simple activated"));
 }
 
 void loop() {
