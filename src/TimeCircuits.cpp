@@ -73,11 +73,11 @@ static const Sel SEL[39] PROGMEM = {
 
 /* ==================== Constructor ==================== */
 TimeCircuits::TimeCircuits(IRTCProvider* rtc, ILogger* log)
-  : curDig(0), tDig(0), tBlink(0), tMin(0), blinkTick(false), jumpLock(false),
-    rtcProvider(rtc), logger(log)
+  : curDig(0), tDig(0), tBlink(0), tMin(0), blinkTick(false), jumpLock(false)
   #ifdef USE_RTC_DS3231
     , lastRTCMinute(255), useRTCForDate(false) // 255 = неинициализировано
   #endif
+    , rtcProvider(rtc), logger(log)
 {
   memset(buf, D_BLANK, sizeof(buf));
 }
@@ -442,14 +442,14 @@ void TimeCircuits::init() {
   #ifdef USE_RTC_DS3231
     // Инициализация RTC модуля
     if (!rtc.begin()) {
-      Serial.println(F("RTC DS3231 not found!"));
-      Serial.println(F("Falling back to millis() mode"));
+      logger->println(F("RTC DS3231 not found!"));
+      logger->println(F("Falling back to millis() mode"));
     } else {
-      Serial.println(F("RTC DS3231 initialized"));
+      logger->println(F("RTC DS3231 initialized"));
       
       // Проверка потери питания
       if (rtc.lostPower()) {
-        Serial.println(F("RTC lost power, setting default time"));
+        logger->println(F("RTC lost power, setting default time"));
         // Установить время компиляции как начальное (опционально)
         // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
         // rtc.adjust(DateTime(F("Oct 26 1985"), F("22:10:00"))); // не будем устанавливать никакую дату, пусть берет по умолчанию какая будет
@@ -459,11 +459,11 @@ void TimeCircuits::init() {
       lastRTCMinute = now.minute();
     }
   #else
-    Serial.println(F("Using millis() for timekeeping"));
+    logger->println(F("Using millis() for timekeeping"));
   #endif
   
   refresh();
-  Serial.println(F("Time Circuits Ready"));
+  logger->println(F("Time Circuits Ready"));
 }
 
 void TimeCircuits::syncPresTimeFromRTC() {
