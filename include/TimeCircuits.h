@@ -2,11 +2,14 @@
 #ifndef TIMECIRCUITS_H
 #define TIMECIRCUITS_H
 
+#include "TCDateTime.h"
 #include "Globals.h"
 // Поддержка RTC модуля
 #ifdef USE_RTC_DS3231
   #include <RTClib.h>
 #endif
+#include "core/Logger/ILogger.h"
+#include "core/RTC/IRTCProvider.h"
 
 class TimeCircuits {
 private:
@@ -29,6 +32,9 @@ private:
     uint8_t lastRTCMinute; // для отслеживания минут модуля
     bool useRTCForDate; // использовать RTC для полной даты (только в диапазоне 2000 - 2099 годов)
   #endif
+
+  IRTCProvider* rtcProvider;
+  ILogger* logger;
   
   // Внутренние методы
   void showDigit(byte idx);
@@ -46,7 +52,7 @@ private:
   int getDaysInMonth(int month, int year);
 
 public:
-  TimeCircuits();
+  TimeCircuits(IRTCProvider* rtc, ILogger* log);
   
   // Инициализация и основной цикл
   void init();
@@ -88,6 +94,6 @@ public:
 };
 
 // Глобальный экземпляр (синглтон)
-extern TimeCircuits timeCircuits;
+// extern TimeCircuits timeCircuits;
 
 #endif

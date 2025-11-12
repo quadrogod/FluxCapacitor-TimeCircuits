@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Config.h"
+#include "Globals.h"
 #include "TimeCircuits.h"
 #include "Animations.h"
 #include "TemperatureHandler.h"

@@ -71,8 +71,9 @@ static const Sel SEL[39] PROGMEM = {
 };
 
 /* ==================== Constructor ==================== */
-TimeCircuits::TimeCircuits() 
-  : curDig(0), tDig(0), tBlink(0), tMin(0), blinkTick(false), jumpLock(false) 
+TimeCircuits::TimeCircuits(IRTCProvider* rtc, ILogger* log)
+  : curDig(0), tDig(0), tBlink(0), tMin(0), blinkTick(false), jumpLock(false),
+    rtcProvider(rtc), logger(log)
   #ifdef USE_RTC_DS3231
     , lastRTCMinute(255), useRTCForDate(false) // 255 = неинициализировано
   #endif
@@ -528,4 +529,4 @@ void TimeCircuits::update() {
 }
 
 // Глобальный экземпляр
-TimeCircuits timeCircuits;
+// TimeCircuits timeCircuits;

@@ -1,6 +1,22 @@
 #include <Arduino.h>
+#include "TCDateTime.h"
 #include "Config.h"
 #include "Globals.h"
+// временное решение для некоторых переменных, посзднее надо веруть их в main.cpp
+#include "core/Logger/SerialLogger.h"
+#include "core/Sensor/TemperatureSensor.h"
+#include "core/RTC/DS3231RTCProvider.h"
+#include "TimeCircuits.h"
+
+// Логгер
+SerialLogger logger;
+// Сенсор
+TemperatureSensor tempSensor;
+// RTC
+DS3231RTCProvider rtcProvider;
+// Time Circuits
+TimeCircuits timeCircuits(&rtcProvider, &logger);
+
 
 bool isLeapYear(int y) {
   return (y%4==0 && y%100!=0) || (y%400==0);

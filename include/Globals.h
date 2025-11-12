@@ -1,7 +1,23 @@
 #pragma once
 
+#include <Arduino.h>
 #include <FastLED.h>
+#include "TCDateTime.h"
 #include "Config.h"
+// временное решение для некоторых переменных, посзднее надо веруть их в main.cpp
+#include "core/Logger/SerialLogger.h"
+#include "core/Sensor/TemperatureSensor.h"
+#include "core/RTC/DS3231RTCProvider.h"
+#include "TimeCircuits.h"
+
+// Логгер
+extern SerialLogger logger;
+// Сенсор
+extern TemperatureSensor tempSensor;
+// RTC
+extern DS3231RTCProvider rtcProvider;
+// Time Circuits
+extern TimeCircuits timeCircuits;
 
 /********************************************************************
  *  GLOBAL VARIABLES
@@ -25,22 +41,9 @@ extern bool rainbowChase;
 // Timer
 extern unsigned long previousTime;
 
-#pragma once
-#include <Arduino.h>
 
 // ==================== DateTime Structure ====================
-struct TCDateTime {
-  int m, d, y, h, min;
-  bool valid;
 
-  TCDateTime() { m=d=y=h=min=0; valid=false; }
-
-  String toText() const {
-    char buf[20];
-    snprintf(buf, sizeof(buf), "%02d.%02d.%04d %02d:%02d", d, m, y, h, min);
-    return String(buf);
-  }
-};
 
 // ==================== Time Utilities ====================
 bool isLeapYear(int y);

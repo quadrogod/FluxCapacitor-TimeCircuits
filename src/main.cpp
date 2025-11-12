@@ -2,9 +2,9 @@
 #include <FastLED.h>
 #include "Config.h"
 #include "Globals.h"
-#include "core/Logger/SerialLogger.h"
-#include "core/Sensor/TemperatureSensor.h"
-#include "core/RTC/DS3231RTCProvider.h"
+// #include "core/Logger/SerialLogger.h"
+// #include "core/Sensor/TemperatureSensor.h"
+// #include "core/RTC/DS3231RTCProvider.h"
 #include "IRHandler.h"
 #include "KeyHandler.h"
 #include "SerialHandler.h"
@@ -15,12 +15,7 @@
 // #include <DFRobotDFPlayerMini.h>
 #include "TemperatureHandler.h"
 
-// Логгер
-SerialLogger logger;
-// Сенсор
-TemperatureSensor tempSensor;
-// RTC
-DS3231RTCProvider rtcProvider;
+
 
 void setup() {
     pinMode(SINGLE_LED_PIN, OUTPUT);
@@ -69,5 +64,5 @@ void loop() {
     handleSerial();
     handleAnimations();
     handleTemperatureSpeed();
-    timeCircuits.update(); 
+    timeCircuits.update();
 }

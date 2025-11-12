@@ -5,7 +5,7 @@
 #ifndef FLUXCAPACITOR_TIMECIRCUITS_IRTCPROVIDER_H
 #define FLUXCAPACITOR_TIMECIRCUITS_IRTCPROVIDER_H
 
-#include "Globals.h"
+#include "TCDateTime.h"
 
 class IRTCProvider {
 public:
