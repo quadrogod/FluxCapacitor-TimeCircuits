@@ -88,6 +88,18 @@ void handleDateInput(char key) {
     Serial.println(F("\nReset"));
     return;
   }
+    #ifdef SET_SIMPLE_DATES
+    if (key == 'D') {
+        if (inputMode == MODE_SET_DEST && inDigits.length() == 0) {
+            timeCircuits.setDestTime(parseDateTime("110519550600")); // синхронизируем Destination Time
+            Serial.println();
+            Serial.println(F("Destination Time Set as Default."));
+            inputMode = MODE_NONE;
+            return;
+        }
+        return;
+    }
+    #endif
 
   if (key == 'P') {
       if (inputMode == MODE_SET_PRES && inDigits.length() == 0) {
@@ -99,6 +111,19 @@ void handleDateInput(char key) {
       }
     return;
   }
+
+    #ifdef SET_SIMPLE_DATES
+        if (key == 'L') {
+            if (inputMode == MODE_SET_LAST && inDigits.length() == 0) {
+                timeCircuits.setLastTime(parseDateTime("102619850122")); // синхронизируем Last Departed Time
+                Serial.println();
+                Serial.println(F("Last Departed Time Set as Default."));
+                inputMode = MODE_NONE;
+                return;
+            }
+            return;
+        }
+    #endif
   
   if (key == 'E') {
     if (inDigits.length() != 12) {
