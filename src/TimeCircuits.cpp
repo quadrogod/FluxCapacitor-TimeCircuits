@@ -450,7 +450,7 @@ void TimeCircuits::init() {
         Serial.println(F("RTC lost power, setting default time"));
         // Установить время компиляции как начальное (опционально)
         // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-        rtc.adjust(DateTime(F("Oct 26 1985"), F("22:10:00")));
+        // rtc.adjust(DateTime(F("Oct 26 1985"), F("22:10:00"))); // не будем устанавливать никакую дату, пусть берет по умолчанию какая будет
       }
 
       DateTime now = rtc.now();
@@ -470,7 +470,7 @@ void TimeCircuits::syncPresTimeFromRTC() {
       DateTime rtcNow = rtc.now();
 
       // Проверяем валидность времени в RTC
-      if (rtcNow.isValid() && rtcNow.year() >= 2000 && rtcNow.year() <= 2099) {
+      if (rtcNow.isValid()) {
         // Устанавливаем время из RTC
         presT.y = rtcNow.year();
         presT.m = rtcNow.month();
@@ -489,7 +489,9 @@ void TimeCircuits::syncPresTimeFromRTC() {
         Serial.print(F("Current time: "));
         Serial.println(presT.toText());
       } else {
-        Serial.println(F("RTC time invalid or out of range (2000-2099)"));
+        presT = TCDateTime();
+        refresh();
+        Serial.println(F("\r\nRTC time invalid"));
       }
     } else {
       Serial.println(F("RTC not found!"));
