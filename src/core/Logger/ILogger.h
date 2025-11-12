@@ -17,11 +17,13 @@ public:
     virtual void print(const __FlashStringHelper* message) = 0;
     virtual void print(int value) = 0;
     virtual void print(float value) = 0;
+    virtual void print(String message) = 0;
 
     virtual void println(const char* message) = 0;
     virtual void println(const __FlashStringHelper* message) = 0;
     virtual void println(int value) = 0;
     virtual void println(float value) = 0;
+    virtual void println(String message) = 0;
     virtual void println() = 0;
 };
 

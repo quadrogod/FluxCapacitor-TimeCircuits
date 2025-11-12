@@ -302,8 +302,8 @@ void TimeCircuits::updatePresentTime() {
     refresh();
     
     // Выводим в Serial для отладки (опционально, можно закомментировать)
-    // Serial.print(F("⏰ Present Time updated: "));
-    // Serial.println(presT.toText());
+    // logger->print(F("⏰ Present Time updated: "));
+    // logger->println(presT.toText());
   }
 }
 
@@ -311,14 +311,14 @@ void TimeCircuits::updatePresentTime() {
 void TimeCircuits::setDestTime(const TCDateTime& dt) {
   destT = dt;
   refresh();
-  Serial.print(F("Destination Time set: "));
-  Serial.println(dt.toText());
+  logger->print(F("Destination Time set: "));
+  logger->println(dt.toText());
 }
 
 void TimeCircuits::clearDestTime() {
   destT = TCDateTime();
   refresh();
-  Serial.println(F("Destination Time cleared"));
+  logger->println(F("Destination Time cleared"));
 }
 
 void TimeCircuits::setPresTime(const TCDateTime& dt) {
@@ -337,9 +337,9 @@ void TimeCircuits::setPresTime(const TCDateTime& dt) {
         rtc.adjust(rtcTime);
         lastRTCMinute = dt.min;
         
-        Serial.println(F("RTC: Full date mode (2000-2099)"));
-        Serial.print(F("Synchronized to: "));
-        Serial.println(dt.toText());
+        logger->println(F("RTC: Full date mode (2000-2099)"));
+        logger->print(F("Synchronized to: "));
+        logger->println(dt.toText());
       } else {
         // ===== Дата вне диапазона: используем RTC только как таймер =====
         useRTCForDate = false;
@@ -349,41 +349,41 @@ void TimeCircuits::setPresTime(const TCDateTime& dt) {
         DateTime rtcNow = rtc.now();
         lastRTCMinute = rtcNow.minute();
         
-        Serial.println(F("RTC: Timer-only mode (year < 2000 or > 2099)"));
-        Serial.print(F("Present Time: "));
-        Serial.println(dt.toText());
+        logger->println(F("RTC: Timer-only mode (year < 2000 or > 2099)"));
+        logger->print(F("Present Time: "));
+        logger->println(dt.toText());
       }
     }
   #endif
 
   refresh();
-  Serial.print(F("Present Time set: "));
-  Serial.println(dt.toText());
+  logger->print(F("Present Time set: "));
+  logger->println(dt.toText());
 }
 
 void TimeCircuits::clearPresTime() {
   presT = TCDateTime();
   refresh();
-  Serial.println(F("Present Time cleared"));
+  logger->println(F("Present Time cleared"));
 }
 
 void TimeCircuits::setLastTime(const TCDateTime& dt) {
   lastT = dt;
   refresh();
-  Serial.print(F("Last Time Departed set: "));
-  Serial.println(dt.toText());
+  logger->print(F("Last Time Departed set: "));
+  logger->println(dt.toText());
 }
 
 void TimeCircuits::clearLastTime() {
   lastT = TCDateTime();
   refresh();
-  Serial.println(F("Last Time Departed cleared"));
+  logger->println(F("Last Time Departed cleared"));
 }
 
 /* ==================== Time Travel ==================== */
 void TimeCircuits::timeTravel() {
   if (!canTimeTravel()) {
-    Serial.println(F("Cannot travel: invalid times or jump locked"));
+    logger->println(F("Cannot travel: invalid times or jump locked"));
     return;
   }
   
@@ -399,7 +399,7 @@ void TimeCircuits::timeTravel() {
       lastRTCMinute = rtcNow.minute();
       //
       useRTCForDate = false; // После прыжка всегда режим таймера!
-      Serial.println(F("RTC: Timer mode (after jump)"));
+      logger->println(F("RTC: Timer mode (after jump)"));
 
     }
   #endif
@@ -407,13 +407,13 @@ void TimeCircuits::timeTravel() {
   jumpLock = true;
   refresh();
   
-  Serial.println(F("⚡ GO TO THE FUTURE ⚡"));
-  Serial.print(F("Destination Time: "));
-  Serial.println(destT.toText());
-  Serial.print(F("Present Time: "));
-  Serial.println(presT.toText());
-  Serial.print(F("Last Departed Time: "));
-  Serial.println(lastT.toText());
+  logger->println(F("⚡ GO TO THE FUTURE ⚡"));
+  logger->print(F("Destination Time: "));
+  logger->println(destT.toText());
+  logger->print(F("Present Time: "));
+  logger->println(presT.toText());
+  logger->print(F("Last Departed Time: "));
+  logger->println(lastT.toText());
 }
 
 /* ==================== Display Refresh ==================== */
@@ -487,19 +487,19 @@ void TimeCircuits::syncPresTimeFromRTC() {
 
         refresh();
 
-        Serial.println(F("Present Time synced from RTC"));
-        Serial.print(F("Current time: "));
-        Serial.println(presT.toText());
+        logger->println(F("Present Time synced from RTC"));
+        logger->print(F("Current time: "));
+        logger->println(presT.toText());
       } else {
         presT = TCDateTime();
         refresh();
-        Serial.println(F("\r\nRTC time invalid"));
+        logger->println(F("\r\nRTC time invalid"));
       }
     } else {
-      Serial.println(F("RTC not found!"));
+      logger->println(F("RTC not found!"));
     }
   #else
-    Serial.println(F("⚠️  RTC not enabled (USE_RTC_DS3231 not defined)"));
+    logger->println(F("⚠️  RTC not enabled (USE_RTC_DS3231 not defined)"));
   #endif
 }
 

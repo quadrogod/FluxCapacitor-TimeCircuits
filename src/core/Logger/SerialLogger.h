@@ -28,6 +28,12 @@ public:
         Serial.print(value);
     }
 
+    void print(String message) override {
+        Serial.print(message);
+    }
+
+    //
+
     void println(const char* message) override {
         Serial.println(message);
     }
@@ -42,6 +48,10 @@ public:
 
     void println(float value) override {
         Serial.println(value);
+    }
+
+    void println(String message) override {
+        Serial.println(message);
     }
 
     void println() override {
