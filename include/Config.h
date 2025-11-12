@@ -45,9 +45,9 @@
 // ----------------- Keypad -----------------
 
 /* --- Пины 74HC595 ----------------------------------------- */
-#define DATA_PIN      22
-#define LATCH_PIN     23
-#define CLOCK_PIN     24
+#define TC_DATA_PIN      22
+#define TC_LATCH_PIN     23
+#define TC_CLOCK_PIN     24
 
 /* --- LED индикаторы --------------------------------------- */
 #define LED_AM_DEST   30

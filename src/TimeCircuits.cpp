@@ -1,6 +1,5 @@
 // TimeCircuits.cpp
 #include <Arduino.h>
-#include <FastLED.h>
 #include "Config.h"
 #include "Globals.h"
 #include "TimeCircuits.h"
@@ -83,11 +82,11 @@ TimeCircuits::TimeCircuits()
 
 /* ==================== Hardware Functions ==================== */
 void TimeCircuits::latchAll(const byte* data) {
-  digitalWrite(LATCH_PIN, LOW);
+  digitalWrite(TC_LATCH_PIN, LOW);
   for (int8_t i = SR_CNT-1; i >= 0; --i) {
-    shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, data[i]);
+    shiftOut(TC_DATA_PIN, TC_CLOCK_PIN, MSBFIRST, data[i]);
   }
-  digitalWrite(LATCH_PIN, HIGH);
+  digitalWrite(TC_LATCH_PIN, HIGH);
 }
 
 void TimeCircuits::showDigit(byte idx) {
@@ -438,9 +437,9 @@ void TimeCircuits::refresh() {
 
 /* ==================== Initialization ==================== */
 void TimeCircuits::init() {
-  pinMode(DATA_PIN, OUTPUT);
-  pinMode(LATCH_PIN, OUTPUT);
-  pinMode(CLOCK_PIN, OUTPUT);
+  pinMode(TC_DATA_PIN, OUTPUT);
+  pinMode(TC_LATCH_PIN, OUTPUT);
+  pinMode(TC_CLOCK_PIN, OUTPUT);
   
   const byte ledPins[] = {
     LED_AM_DEST, LED_PM_DEST, LED_SEC1_DEST, LED_SEC2_DEST,

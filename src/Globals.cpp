@@ -1,4 +1,4 @@
-#include <FastLED.h>
+#include <Arduino.h>
 #include "Config.h"
 #include "Globals.h"
 

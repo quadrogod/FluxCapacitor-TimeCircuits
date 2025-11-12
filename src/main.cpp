@@ -17,7 +17,10 @@ void setup() {
     pinMode(SINGLE_LED_PIN, OUTPUT);
 
     Serial.begin(115200);
-    Serial.println(F("\n=== Flux Capacitor Setup Starting ==="));
+    Serial.println(F("\n=== Flux Capacitor & Time Circuits ==="));
+    Serial.println(F("\nVersion: 1.24"));
+
+    Serial.println(F("\n=== Setup Starting ==="));
 
     // ---------------- DFPlayer (commented for Wokwi) ----------------
     // mySoftwareSerial.begin(9600);
