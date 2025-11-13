@@ -65,7 +65,6 @@ void loop() {
     // handleSerial();
     // handleAnimations();
     // handleTemperatureSpeed();
-    tempSensor.update();
     animationManager.update();
     timeCircuits.update();
 }

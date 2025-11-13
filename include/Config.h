@@ -79,6 +79,6 @@
 /* --- Датчик ----------------------------------------------- */
 #define NTC_PIN       A0
 // ==================== Temperature Speed Sensor ====================
-#define TEMP_START_THRESHOLD 28.0   // Температура начала ускорения (°C)
+#define TEMP_START_THRESHOLD 30.0   // Температура начала ускорения (°C)
 #define TEMP_FLASH_THRESHOLD 80.0   // Температура синей вспышки (°C)
 #define TEMP_RESET_THRESHOLD 20.0   // Температура сброса блокировки (°C)

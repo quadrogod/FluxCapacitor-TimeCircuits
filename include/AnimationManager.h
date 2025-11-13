@@ -27,13 +27,13 @@ class AnimationManager {
             MOVIE_FLOW,
             MOVIE_FLOW_REAL,
             RAINBOW_FLOW,
-            TIME_TRAVEL
-            // MOVIE_TIME_TRAVEL
+            TIME_TRAVEL,
+            TIME_TRAVEL_REAL
         };
 
 
         // количество AnimationType
-        AnimationConfig animations[8] = {
+        AnimationConfig animations[9] = {
             /* OFF */ { "OFF Mode activated", 0 },
             /* SLOW_FLOW */ { "Slow flow activated", 66.66 },
             /* MIDDLE_FLOW */ { "Middle flow activated", 66.66 },
@@ -42,6 +42,7 @@ class AnimationManager {
             /* MOVIE_FLOW_REAL */ { "Movie flow real activated", 34.45 },
             /* RAINBOW_FLOW */ { "Rainbow flow activated", 66.66 },
             /* TIME_TRAVEL */ { "Time Travel activated", 113 },
+            /* TIME_TRAVEL */ { "Time Travel Real activated", 113 },
         };
 
         AnimationManager(ISensor* sens, ILogger* log);
@@ -96,16 +97,18 @@ class AnimationManager {
         TTState ttState = TTState::RUNNING;
         GTimer<millis> ttTimer;
         unsigned long fadeStartTime = 0; // Для отслеживания времени фейда
-
-    void resetAnimationState();
-    void runOff();
-    void runSlowFlow();
-    void runMiddleFlow();
-    void runFastFlow();
-    void runMovieFlow();
-    void runMovieFlowReal();
-    void runRainbowFlow();
-    void runTimeTravel();
+        bool timeTravelCompleted = false;  // Флаг завершения цикла анимации
+        //
+        void resetAnimationState();
+        void runOff();
+        void runSlowFlow();
+        void runMiddleFlow();
+        void runFastFlow();
+        void runMovieFlow();
+        void runMovieFlowReal();
+        void runRainbowFlow();
+        void runTimeTravel();
+        void runTimeTravelReal();
 };
 
 #endif //FLUXCAPACITOR_TIMECIRCUITS_ANIMATIONMANAGER_H

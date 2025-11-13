@@ -186,6 +186,10 @@ void handleNormalMode(char k) {
             animationManager.setAnimation(AnimationManager::AnimationType::TIME_TRAVEL);
             break;
 
+        case '7':
+            // animationManager.setAnimation(AnimationManager::AnimationType::TIME_TRAVEL_REAL);
+            break;
+
         case '8':
             animationManager.setAnimation(AnimationManager::AnimationType::RAINBOW_FLOW);
             break;

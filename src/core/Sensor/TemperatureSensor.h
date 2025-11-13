@@ -48,13 +48,12 @@ public:
     }
 
     float getProgress() override {
-        if (currentTemp < startThreshold) return 0.0;
+        if (currentTemp <= startThreshold) return 0.0;
         if (currentTemp >= triggerThreshold) return 1.0;
 
         float range = triggerThreshold - startThreshold;
-        if (range <= 0) return 0.0;
-
-        return (currentTemp - startThreshold) / range;
+        float progress = (currentTemp - startThreshold) / range;
+        return constrain(progress, 0.0, 1.0);
     }
 
     bool shouldTrigger() override {
