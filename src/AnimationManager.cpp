@@ -13,7 +13,6 @@ void AnimationManager::init() {
     FastLED.setMaxPowerInVoltsAndMilliamps(5, LED_POWER_LIMIT_MA);
     FastLED.clear();
     FastLED.show();
-
     logger->println(F("Animation Manager Initialized"));
 }
 
@@ -48,6 +47,10 @@ void AnimationManager::update() {
             runMovieFlowReal();
             break;
 
+        case AnimationType::RAINBOW_FLOW:
+            runRainbowFlow();
+            break;
+
         case AnimationType::OFF:
         default:
             runOff();
@@ -59,6 +62,7 @@ void AnimationManager::resetAnimationState() {
     currentAnimation = AnimationType::OFF;
     animTimer.stop();
     ttTimer.stop();
+    hueTimer.stop();
     ttState = TTState::RUNNING;
     animStep = 0;
     animSubStep = 0;
@@ -72,6 +76,10 @@ void AnimationManager::setAnimation(AnimationType anim) {
     currentAnimationConfig = animations[static_cast<int>(anim)];
     animTimer.setTime(currentAnimationConfig.delay);
     animTimer.start();
+    if (anim == AnimationType::RAINBOW_FLOW) {
+        hueTimer.setTime(5);
+        hueTimer.start();
+    }
     logger->println(currentAnimationConfig.activatedMessage);
 }
 
@@ -150,4 +158,14 @@ void AnimationManager::runMovieFlowReal() {
 
     animStep++;
     if (animStep >= 4) animStep = 0;
+}
+
+void AnimationManager::runRainbowFlow() {
+    // Обновление hue каждые 5 мс
+    if (hueTimer.tick()) hue++;
+
+    for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CHSV(hue + i * 10, 255, 200);
+    }
+    FastLED.show();
 }

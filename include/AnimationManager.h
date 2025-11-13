@@ -25,7 +25,8 @@ class AnimationManager {
             MIDDLE_FLOW,
             FAST_FLOW,
             MOVIE_FLOW,
-            MOVIE_FLOW_REAL
+            MOVIE_FLOW_REAL,
+            RAINBOW_FLOW
             // TIME_TRAVEL,
             // THIRTY_CHASE,
             // MOVIE_CHASE,
@@ -38,13 +39,14 @@ class AnimationManager {
 
 
         // количество AnimationType
-        AnimationConfig animations[6] = {
+        AnimationConfig animations[7] = {
             /* OFF */ { "OFF Mode activated", 0 },
             /* SLOW_FLOW */ { "Slow flow activated", 66.66 },
             /* MIDDLE_FLOW */ { "Middle flow activated", 66.66 },
             /* FAST_FLOW */ { "Fast flow activated", 66.66 },
             /* MOVIE_FLOW */ { "Movie flow activated", 22.97 },
             /* MOVIE_FLOW_REAL */ { "Movie flow real activated", 34.45 },
+            /* RAINBOW_FLOW */ { "Rainbow flow activated", 66.66 },
         };
 
         AnimationManager(ISensor* sens, ILogger* log);
@@ -68,12 +70,9 @@ class AnimationManager {
         ISensor* sensor;
         ILogger* logger;
 
-        // int delaySpeed = 80;
-        // float movieSpeed = 34.45;
-
         // Таймеры для анимаций
         GTimer<millis> animTimer;
-        // GTimer<millis> hueTimer(5, true); // для rainbow
+        GTimer<millis> hueTimer; // для rainbow эффекта
 
         int animStep = 0;
         int animSubStep = 0;
@@ -110,6 +109,7 @@ class AnimationManager {
     void runFastFlow();
     void runMovieFlow();
     void runMovieFlowReal();
+    void runRainbowFlow();
 };
 
 #endif //FLUXCAPACITOR_TIMECIRCUITS_ANIMATIONMANAGER_H

@@ -181,6 +181,10 @@ void handleNormalMode(char k) {
         case '5':
             animationManager.setAnimation(AnimationManager::AnimationType::MOVIE_FLOW_REAL);
             break;
+
+        case '8':
+            animationManager.setAnimation(AnimationManager::AnimationType::RAINBOW_FLOW);
+            break;
             
         // case '2':
         //     resetModes();
