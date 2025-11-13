@@ -5,6 +5,7 @@
 // временное решение для некоторых переменных, посзднее надо веруть их в main.cpp
 #include "core/Logger/SerialLogger.h"
 #include "core/Sensor/TemperatureSensor.h"
+#include "core/Sensor/StubSensor.h"
 #include "core/RTC/DS3231RTCProvider.h"
 #include "TimeCircuits.h"
 #include "AnimationManager.h"
@@ -12,7 +13,14 @@
 // Логгер
 extern SerialLogger logger;
 // Сенсор
-extern TemperatureSensor tempSensor;
+#if USE_STUB_SENSOR
+    extern StubSensor sensor;
+    // Serial.println("Using STUB sensor (25°C)");
+#else
+    extern TemperatureSensor sensor;
+    // Serial.println("Using REAL temperature sensor");
+#endif
+// extern TemperatureSensor sensor;
 // RTC
 extern DS3231RTCProvider rtcProvider;
 // Time Circuits
