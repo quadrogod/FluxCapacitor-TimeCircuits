@@ -26,7 +26,7 @@ private:
   unsigned long tBlink;
   unsigned long tMin;
   bool blinkTick;
-  bool jumpLock;
+  // bool jumpLock;
 
   #ifdef USE_RTC_DS3231
     RTC_DS3231 rtc;  
@@ -94,10 +94,10 @@ public:
   void clearLastTime();
   
   // Управление прыжками во времени
-  bool canTimeTravel() const { return destT.valid && presT.valid && !jumpLock; }
+  bool canTimeTravel() const { return destT.valid && presT.valid; }
   void timeTravel();
-  void unlockJump() { jumpLock = false; }
-  bool isJumpLocked() const { return jumpLock; }
+  // void unlockJump() { jumpLock = false; }
+  // bool isJumpLocked() const { return jumpLock; }
 
   void syncPresTimeFromRTC(); // синхронизируем на время из RTC модуля
   // Обновление дисплея

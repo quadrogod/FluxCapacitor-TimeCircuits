@@ -68,7 +68,7 @@ static const Sel SEL[39] PROGMEM = {
 
 /* ==================== Constructor ==================== */
 TimeCircuits::TimeCircuits(IRTCProvider* rtc, ILogger* log)
-  : curDig(0), tDig(0), tBlink(0), tMin(0), blinkTick(false), jumpLock(false)
+  : curDig(0), tDig(0), tBlink(0), tMin(0), blinkTick(false) //, jumpLock(false)
   #ifdef USE_RTC_DS3231
     , lastRTCMinute(255), useRTCForDate(false) // 255 = неинициализировано
   #endif
@@ -387,7 +387,7 @@ void TimeCircuits::timeTravel() {
     logger->println(F("RTC: Timer mode (after jump)"));
   }
 
-  jumpLock = true;
+  // jumpLock = true;
   refresh();
   
   logger->println(F("⚡ GO TO THE FUTURE ⚡"));

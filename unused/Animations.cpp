@@ -5,7 +5,7 @@
 #include "Globals.h"
 #include "EaseUtils.h"
 #include "Animations.h"
-#include "TemperatureHandler.h"
+// #include "TemperatureHandler.h"
 #include "TimeCircuits.h"
 
 // Состояния для Movie Time Travel эффекта
