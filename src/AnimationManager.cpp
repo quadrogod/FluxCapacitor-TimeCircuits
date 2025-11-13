@@ -18,6 +18,10 @@ void AnimationManager::init() {
     logger->println(F("Animation Manager Initialized"));
 }
 
+void AnimationManager::toggleColor() {
+    useWarmColor = !useWarmColor;
+}
+
 void AnimationManager::update() {
     // Обновляем сенсор
     if (sensor) {
@@ -62,7 +66,10 @@ void AnimationManager::resetAnimationState() {
 }
 
 void AnimationManager::setAnimation(AnimationType anim) {
-    if (currentAnimation == anim) return;
+    if (currentAnimation == anim) {
+        toggleColor();
+        return;
+    }
     //
     resetAnimationState();
     currentAnimation = anim;
@@ -87,7 +94,11 @@ void AnimationManager::runSlowFlow() {
     FastLED.clear();
     for (int j = 0; j <= 6; j++) {
         if (animStep - j >= 0) {
-            leds[animStep - j] = CHSV(32, 128, 20 + j * 30);
+            if (useWarmColor) {
+                leds[animStep - j] = CHSV(22, 200, 20 + j * 30);
+            } else {
+                leds[animStep - j] = CHSV(28, 120, 20 + j * 30);
+            }
         }
     }
     FastLED.show();
@@ -101,9 +112,15 @@ void AnimationManager::runMiddleFlow() {
 
     FastLED.clear();
     if (animStep < NUM_LEDS) {
-        leds[animStep] = CHSV(28, 200, 120);
-        if (animStep > 0) leds[animStep - 1] = CHSV(28, 200, 30);
-        if (animStep < NUM_LEDS - 1) leds[animStep + 1] = CHSV(28, 200, 30);
+        if (useWarmColor) {
+            leds[animStep] = CHSV(22, 200, 100);
+            if (animStep > 0) leds[animStep - 1] = CHSV(22, 200, 30);
+            if (animStep < NUM_LEDS - 1) leds[animStep + 1] = CHSV(22, 200, 30);
+        } else {
+            leds[animStep] = CHSV(28, 120, 100);
+            if (animStep > 0) leds[animStep - 1] = CHSV(28, 120, 30);
+            if (animStep < NUM_LEDS - 1) leds[animStep + 1] = CHSV(28, 120, 30);
+        }
     }
     FastLED.show();
 
@@ -115,9 +132,13 @@ void AnimationManager::runFastFlow() {
     if (!animTimer.tick()) return;
 
     FastLED.clear();
-    int base = animStep * 2;
-    if (base < NUM_LEDS - 1) {
-        leds[base] = leds[base + 1] = CHSV(28, 120, 100);
+    int idx = animStep * 2;
+    if (idx < NUM_LEDS - 1) {
+        if (useWarmColor) {
+            leds[idx] = leds[idx + 1] = CHSV(22, 200, 100);
+        } else {
+            leds[idx] = leds[idx + 1] = CHSV(28, 120, 100);
+        }
     }
     FastLED.show();
 
@@ -131,7 +152,12 @@ void AnimationManager::runMovieFlow() {
     FastLED.clear();
     int idx = animStep * 2;
     if (idx < NUM_LEDS - 1) {
-        leds[idx] = leds[idx + 1] = CHSV(22, 200, 100);
+        // leds[idx] = leds[idx + 1] = CHSV(22, 200, 100);
+        if (useWarmColor) {
+            leds[idx] = leds[idx + 1] = CHSV(22, 200, 100);
+        } else {
+            leds[idx] = leds[idx + 1] = CHSV(28, 120, 100);
+        }
     }
     FastLED.show();
 
@@ -145,7 +171,12 @@ void AnimationManager::runMovieFlowReal() {
     FastLED.clear();
     int idx = 2 + animStep * 2;
     if (idx <= 8) {
-        leds[idx] = CHSV(22, 200, 100);
+        // leds[idx] = CHSV(22, 200, 100);
+        if (useWarmColor) {
+            leds[idx] = CHSV(22, 200, 100);
+        } else {
+            leds[idx] = CHSV(28, 120, 100);
+        }
     }
     FastLED.show();
 

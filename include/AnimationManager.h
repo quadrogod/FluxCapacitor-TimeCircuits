@@ -60,6 +60,8 @@ class AnimationManager {
             timeTravelValidator = validator;
         }
 
+        void toggleColor();  // Переключение оттенка
+
     private:
         // FastLED
         CRGB leds[NUM_LEDS];
@@ -104,6 +106,8 @@ class AnimationManager {
         GTimer<millis> ttTimer;
         unsigned long fadeStartTime = 0; // Для отслеживания времени фейда
         bool timeTravelCompleted = false;  // Флаг завершения цикла анимации
+
+        bool useWarmColor = true; // теплый свет (как в оригинале) или холодный
         //
         void resetAnimationState();
         void runOff();
