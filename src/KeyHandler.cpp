@@ -163,63 +163,75 @@ void handleNormalMode(char k) {
     switch (k)
     {
         case '1':
-            resetModes();
-            setTimeTravel();
-            Serial.println(F("Time Travel activated"));
+            animationManager.setAnimation(AnimationManager::AnimationType::SLOW_FLOW);
             break;
-            
+
         case '2':
-            resetModes();
-            setSmoothChase();
-            Serial.println(F("Smooth Chase activated"));
+            animationManager.setAnimation(AnimationManager::AnimationType::MIDDLE_FLOW);
             break;
-            
+
         case '3':
-            resetModes();
-            setThirtyChase();
-            Serial.println(F("Thirty Chase activated"));
+            animationManager.setAnimation(AnimationManager::AnimationType::FAST_FLOW);
             break;
 
         case '4':
-            resetModes();
-            setMovieChase();
-            Serial.println(F("Movie Chase activated"));
+            animationManager.setAnimation(AnimationManager::AnimationType::MOVIE_FLOW);
             break;
-          
+
         case '5':
-            resetModes();
-            setMovieChaseSimple();
-            Serial.println(F("Movie Chase Simple activated"));
+            animationManager.setAnimation(AnimationManager::AnimationType::MOVIE_FLOW_REAL);
             break;
-
-        case '6':
-            resetModes();
-            setRadChase();
-            Serial.println(F("Rad Chase activated"));
-            break;
-
-        case '7':
-            resetModes();
-            setRadChase2();
-            Serial.println(F("Rad Chase 2 activated"));
-            break;
-
-        case '8':
-            resetModes();
-            setRainbowChase();
-            Serial.println(F("Rainbow activated"));
-            break;
-
-        case '9':
-            resetModes();
-            setMovieTimeTravel();
-            Serial.println(F("Movie Time Travel activated"));
-            break;
-
+            
+        // case '2':
+        //     resetModes();
+        //     setSmoothChase();
+        //     Serial.println(F("Smooth Chase activated"));
+        //     break;
+        //
+        // case '3':
+        //     resetModes();
+        //     setThirtyChase();
+        //     Serial.println(F("Thirty Chase activated"));
+        //     break;
+        //
+        // case '4':
+        //     resetModes();
+        //     setMovieChase();
+        //     Serial.println(F("Movie Chase activated"));
+        //     break;
+        //
+        // case '5':
+        //     resetModes();
+        //     setMovieChaseSimple();
+        //     Serial.println(F("Movie Chase Simple activated"));
+        //     break;
+        //
+        // case '6':
+        //     resetModes();
+        //     setRadChase();
+        //     Serial.println(F("Rad Chase activated"));
+        //     break;
+        //
+        // case '7':
+        //     resetModes();
+        //     setRadChase2();
+        //     Serial.println(F("Rad Chase 2 activated"));
+        //     break;
+        //
+        // case '8':
+        //     resetModes();
+        //     setRainbowChase();
+        //     Serial.println(F("Rainbow activated"));
+        //     break;
+        //
+        // case '9':
+        //     resetModes();
+        //     setMovieTimeTravel();
+        //     Serial.println(F("Movie Time Travel activated"));
+        //     break;
+        //
         case '0':
-            resetModes();
-            setOff();
-            Serial.println(F("LEDs cleared"));
+            animationManager.setAnimation(AnimationManager::AnimationType::OFF);
             break;
 
         case 'D':

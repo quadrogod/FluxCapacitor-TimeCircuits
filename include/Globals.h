@@ -7,6 +7,7 @@
 #include "core/Sensor/TemperatureSensor.h"
 #include "core/RTC/DS3231RTCProvider.h"
 #include "TimeCircuits.h"
+#include "AnimationManager.h"
 
 // Логгер
 extern SerialLogger logger;
@@ -16,6 +17,8 @@ extern TemperatureSensor tempSensor;
 extern DS3231RTCProvider rtcProvider;
 // Time Circuits
 extern TimeCircuits timeCircuits;
+
+extern AnimationManager animationManager;
 
 /********************************************************************
  *  GLOBAL VARIABLES

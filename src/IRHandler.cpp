@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <FastLED.h>
 #include <IRremote.hpp>
 #include "Config.h"
 #include "Globals.h"
@@ -32,7 +31,9 @@ void handleIRRemote() {
             Serial.println(F("Time Travel activated"));
             break;
 
-        case BTN_POWER: FastLED.clear(); FastLED.show(); break;
+        case BTN_POWER:
+            //FastLED.clear(); FastLED.show();
+            break;
 
         case BTN_2:  
             setSmoothChase();

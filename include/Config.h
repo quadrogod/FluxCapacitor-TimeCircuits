@@ -38,6 +38,7 @@
 // ----------------- LEDS -----------------
 // #define NUM_LEDS   22
 #define NUM_LEDS   22
+#define NUM_LEDS_ON_LINE   10
 #define DATA_RING_PIN   11
 // #define CLOCK_PIN  13
 #define LED_POWER_LIMIT_MA 500

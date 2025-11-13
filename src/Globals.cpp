@@ -4,6 +4,7 @@
 #include "core/Sensor/TemperatureSensor.h"
 #include "core/RTC/DS3231RTCProvider.h"
 #include "TimeCircuits.h"
+#include "AnimationManager.h"
 
 // Логгер
 SerialLogger logger;
@@ -13,3 +14,5 @@ TemperatureSensor tempSensor;
 DS3231RTCProvider rtcProvider;
 // Time Circuits
 TimeCircuits timeCircuits(&rtcProvider, &logger);
+
+AnimationManager animationManager(&tempSensor, &logger);

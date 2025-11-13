@@ -1,11 +1,11 @@
 #include <Arduino.h>
-#include <FastLED.h>
+// #include <FastLED.h>
 #include "Config.h"
 #include "Globals.h"
 // #include "core/Logger/SerialLogger.h"
 // #include "core/Sensor/TemperatureSensor.h"
 // #include "core/RTC/DS3231RTCProvider.h"
-#include "IRHandler.h"
+// #include "IRHandler.h"
 #include "KeyHandler.h"
 #include "SerialHandler.h"
 #include "Animations.h"
@@ -13,7 +13,7 @@
 // #include <IRremote.hpp>
 // #include <SoftwareSerial.h>
 // #include <DFRobotDFPlayerMini.h>
-#include "TemperatureHandler.h"
+// #include "TemperatureHandler.h"
 
 
 
@@ -22,7 +22,7 @@ void setup() {
     Serial.begin(115200);
 
     logger.println(F("=== Flux Capacitor & Time Circuits ==="));
-    logger.println(F("Version: 1.25"));
+    logger.println(F("Version: 1.27"));
 
     logger.println(F("=== Setup Starting ==="));
 
@@ -37,32 +37,34 @@ void setup() {
     // delay(600);
 
     // ---------------- IR Receiver ----------------
-    initIR();
-    logger.println(F("IR Receiver Ready."));
+    // initIR();
+    // logger.println(F("IR Receiver Ready."));
 
     // ---------------- LED Setup ----------------
-    FastLED.addLeds<WS2812B, DATA_RING_PIN, GRB>(leds, NUM_LEDS);
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, LED_POWER_LIMIT_MA);
-    FastLED.clear();
-    FastLED.show();
-
+    // FastLED.addLeds<WS2812B, DATA_RING_PIN, GRB>(leds, NUM_LEDS);
+    // FastLED.setMaxPowerInVoltsAndMilliamps(5, LED_POWER_LIMIT_MA);
+    // FastLED.clear();
+    // FastLED.show();
+    animationManager.init();
     timeCircuits.init();
     initKeypad();
-    initTemperatureSensor();
+    // initTemperatureSensor();
 
     logger.println(F("Setup Completed."));
 
     // запускаем свет
-    resetModes();   
-    setMovieChaseSimple();
-    logger.println(F("Movie Chase Simple activated"));
+    // resetModes();
+    // setMovieChaseSimple();
+    // logger.println(F("Movie Chase Simple activated"));
+    animationManager.setAnimation(AnimationManager::AnimationType::SLOW_FLOW);
 }
 
 void loop() {
-    handleIRRemote();
+    // handleIRRemote();
     handleKey();
-    handleSerial();
-    handleAnimations();
-    handleTemperatureSpeed();
+    // handleSerial();
+    // handleAnimations();
+    // handleTemperatureSpeed();
+    animationManager.update();
     timeCircuits.update();
 }
