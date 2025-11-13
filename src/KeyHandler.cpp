@@ -2,9 +2,9 @@
 #include <Keypad.h>
 #include "Config.h"
 #include "Globals.h"
-#include "Animations.h"
+// #include "Animations.h"
 #include "KeyHandler.h"
-#include "IRHandler.h"
+// #include "IRHandler.h"
 #include "TimeCircuits.h"
 #include "TimeUtils.h"
 

@@ -7,8 +7,8 @@
 // #include "core/RTC/DS3231RTCProvider.h"
 // #include "IRHandler.h"
 #include "KeyHandler.h"
-#include "SerialHandler.h"
-#include "Animations.h"
+// #include "SerialHandler.h"
+// #include "Animations.h"
 #include "TimeCircuits.h"
 // #include <IRremote.hpp>
 // #include <SoftwareSerial.h>
@@ -65,6 +65,7 @@ void loop() {
     // handleSerial();
     // handleAnimations();
     // handleTemperatureSpeed();
+    tempSensor.update();
     animationManager.update();
     timeCircuits.update();
 }
