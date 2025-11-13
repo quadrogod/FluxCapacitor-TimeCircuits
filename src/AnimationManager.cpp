@@ -825,13 +825,6 @@ void AnimationManager::runTimeTravelReal() {
     // Устанавливаем новую скорость
     animTimer.setTime(newDelay);
 
-    logger->print(F("Temp: "));
-    logger->print(sensor->getValue());
-    logger->print(F("°C | Progress: "));
-    logger->print(tempProgress * 100);
-    logger->print(F("% | Delay: "));
-    logger->println(newDelay);
-
     // Если таймер НЕ сработал - выходим
     if (!animTimer.tick()) return;
 
