@@ -49,6 +49,7 @@ void setup() {
     timeCircuits.init();
     initKeypad();
     // initTemperatureSensor();
+    setupComponentLinks();
 
     logger.println(F("Setup Completed."));
 

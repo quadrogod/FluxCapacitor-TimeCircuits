@@ -812,7 +812,8 @@ void AnimationManager::runTimeTravelReal() {
     float tempProgress = sensor->getProgress();
 
     // ИСПРАВЛЕНИЕ: Фиксированная базовая скорость!
-    const float baseSpeed = 113.0;  // НЕ берём из currentAnimationConfig.delay!
+    // const float baseSpeed = 113.0;  // НЕ берём из currentAnimationConfig.delay!
+    const float baseSpeed = 66.66;  // что бы не отличалось от SLOW_FLOW
     const float minSpeed = 0.5;
 
     // Применяем функцию кривой (медленный старт, быстрое ускорение)
@@ -880,16 +881,27 @@ void AnimationManager::runTimeTravelReal() {
 
         // ИСПРАВЛЕНИЕ: Используем shouldTrigger() вместо tempProgress >= 1.0
         if (sensor->shouldTrigger()) {
-            ttState = TTState::FLASH_START;
-            ttTimer.start(50);
-            animTimer.stop();
+            bool canFullTravel = (timeTravelValidator != nullptr) &&
+                                  timeTravelValidator->canPerformFullTimeTravel();
+            if (canFullTravel) {
+                ttState = TTState::FLASH_START;
+                ttTimer.start(50);
+                animTimer.stop();
 
-            // Сброс переменных искр
-            sparkCounter = 0;
-            sparkPixel = -1;
-            sparkBrightness = 0;
+                // Сброс переменных искр
+                sparkCounter = 0;
+                sparkPixel = -1;
+                sparkBrightness = 0;
 
-            logger->println(F("⚡⚡⚡ 88MP/h REACHED - TIME JUMP! ⚡⚡⚡"));
+                // Вызываем путешествие во времени
+                timeTravelValidator->performTimeTravel();
+                logger->println(F("⚡⚡⚡ 88MP/h REACHED - TIME JUMP! ⚡⚡⚡"));
+            } else {
+                // ===== ОЖИДАНИЕ УСТАНОВКИ ВРЕМЁН =====
+                // logger->println(F("⚡ 88MP/h reached! Waiting for times to be set..."));
+                // лог не пишем, иначе срабатывает постоянно, надо что-то придумать тоже, что бы один раз писал
+            }
+            //
             return;
         }
     }

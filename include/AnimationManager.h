@@ -11,6 +11,7 @@
 #include "Config.h"
 #include "../src/core/Sensor/ISensor.h"
 #include "../src/core/Logger/ILogger.h"
+#include "ITimeTravelValidator.h"
 
 class AnimationManager {
     public:
@@ -41,8 +42,8 @@ class AnimationManager {
             /* MOVIE_FLOW */ { "Movie flow activated", 22.97 },
             /* MOVIE_FLOW_REAL */ { "Movie flow real activated", 34.45 },
             /* RAINBOW_FLOW */ { "Rainbow flow activated", 66.66 },
-            /* TIME_TRAVEL */ { "Time Travel activated", 113 },
-            /* TIME_TRAVEL */ { "Time Travel Real activated", 113 },
+            /* TIME_TRAVEL */ { "Time Travel activated", 66.66 }, // 113
+            /* TIME_TRAVEL */ { "Time Travel Real activated", 66.66 }, // 113
         };
 
         AnimationManager(ISensor* sens, ILogger* log);
@@ -55,6 +56,10 @@ class AnimationManager {
         // CRGB* getLEDs() { return leds; }
         // int getLEDCount() const { return NUM_LEDS; }
 
+        void setTimeTravelValidator(ITimeTravelValidator* validator) {
+            timeTravelValidator = validator;
+        }
+
     private:
         // FastLED
         CRGB leds[NUM_LEDS];
@@ -65,6 +70,7 @@ class AnimationManager {
         // Зависимости
         ISensor* sensor;
         ILogger* logger;
+        ITimeTravelValidator* timeTravelValidator;
 
         // Таймеры для анимаций
         GTimer<millis> animTimer;

@@ -20,6 +20,8 @@ extern TimeCircuits timeCircuits;
 
 extern AnimationManager animationManager;
 
+void setupComponentLinks();
+
 /********************************************************************
  *  GLOBAL VARIABLES
  ********************************************************************/

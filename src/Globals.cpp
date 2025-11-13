@@ -16,3 +16,7 @@ DS3231RTCProvider rtcProvider;
 TimeCircuits timeCircuits(&rtcProvider, &logger);
 
 AnimationManager animationManager(&tempSensor, &logger);
+
+void setupComponentLinks() {
+    animationManager.setTimeTravelValidator(&timeCircuits);
+}

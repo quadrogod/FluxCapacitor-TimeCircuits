@@ -10,8 +10,9 @@
 #endif
 #include "core/Logger/ILogger.h"
 #include "core/RTC/IRTCProvider.h"
+#include "ITimeTravelValidator.h"
 
-class TimeCircuits {
+class TimeCircuits : public ITimeTravelValidator {
 private:
   // Данные времени
   TCDateTime destT;
@@ -53,6 +54,16 @@ private:
 
 public:
   TimeCircuits(IRTCProvider* rtc, ILogger* log);
+
+  // Реализация интерфейса
+  bool canPerformFullTimeTravel() const override {
+    // Проверяем, что установлены Present Time И Destination Time
+    return presT.valid && destT.valid;
+  }
+
+  void performTimeTravel() override {
+    timeTravel();  // Вызываем существующий метод
+  }
   
   // Инициализация и основной цикл
   void init();
