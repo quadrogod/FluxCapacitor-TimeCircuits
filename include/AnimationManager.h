@@ -26,20 +26,14 @@ class AnimationManager {
             FAST_FLOW,
             MOVIE_FLOW,
             MOVIE_FLOW_REAL,
-            RAINBOW_FLOW
-            // TIME_TRAVEL,
-            // THIRTY_CHASE,
-            // MOVIE_CHASE,
-            // MOVIE_CHASE_SIMPLE,
-            // RAD_CHASE,
-            // RAD_CHASE_2,
-            // RAINBOW_CHASE,
+            RAINBOW_FLOW,
+            TIME_TRAVEL
             // MOVIE_TIME_TRAVEL
         };
 
 
         // количество AnimationType
-        AnimationConfig animations[7] = {
+        AnimationConfig animations[8] = {
             /* OFF */ { "OFF Mode activated", 0 },
             /* SLOW_FLOW */ { "Slow flow activated", 66.66 },
             /* MIDDLE_FLOW */ { "Middle flow activated", 66.66 },
@@ -47,6 +41,7 @@ class AnimationManager {
             /* MOVIE_FLOW */ { "Movie flow activated", 22.97 },
             /* MOVIE_FLOW_REAL */ { "Movie flow real activated", 34.45 },
             /* RAINBOW_FLOW */ { "Rainbow flow activated", 66.66 },
+            /* TIME_TRAVEL */ { "Time Travel activated", 113 },
         };
 
         AnimationManager(ISensor* sens, ILogger* log);
@@ -110,6 +105,7 @@ class AnimationManager {
     void runMovieFlow();
     void runMovieFlowReal();
     void runRainbowFlow();
+    void runTimeTravel();
 };
 
 #endif //FLUXCAPACITOR_TIMECIRCUITS_ANIMATIONMANAGER_H
