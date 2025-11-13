@@ -40,6 +40,7 @@ void AnimationManager::update() {
     }
 
     switch (currentAnimation) {
+        case AnimationType::LOW_POWER:          runLowPower();break;
         case AnimationType::SLOW_FLOW:          runSlowFlow();break;
         case AnimationType::MIDDLE_FLOW:        runMiddleFlow();break;
         case AnimationType::FAST_FLOW:          runFastFlow();break;
@@ -56,6 +57,7 @@ void AnimationManager::update() {
 }
 
 void AnimationManager::resetAnimationState() {
+    digitalWrite(SINGLE_LED_PIN, LOW);
     currentAnimation = AnimationType::OFF;
     animTimer.stop();
     ttTimer.stop();
@@ -86,6 +88,73 @@ void AnimationManager::setAnimation(AnimationType anim) {
 void AnimationManager::runOff() {
     FastLED.clear();
     FastLED.show();
+}
+
+void AnimationManager::runLowPower() {
+    if (!animTimer.tick()) return;
+
+    FastLED.clear();
+
+    // ====================================================================
+    // АНИМАЦИЯ ЛЕНТЫ (как в runSlowFlow)
+    // ====================================================================
+    for (int j = 0; j <= 6; j++) {
+        if (animStep - j >= 0) {
+            if (useWarmColor) {
+                leds[animStep - j] = CHSV(22, 200, 20 + j * 30);
+            } else {
+                leds[animStep - j] = CHSV(28, 120, 20 + j * 30);
+            }
+        }
+    }
+
+    FastLED.show();
+
+    // ====================================================================
+    // УПРАВЛЕНИЕ СИГНАЛЬНЫМ СВЕТОДИОДОМ
+    // ====================================================================
+    // NUM_LEDS = 22, но реальных пикселей 10
+    // Цикл занимает ~800мс паузу (когда animStep >= 10)
+    // Диод должен:
+    // - Гореть на полную яркость в начале (animStep 0-10)
+    // - Плавно тухнуть в конце цикла (animStep 10-22)
+
+    if (animStep == 0) {
+        digitalWrite(SINGLE_LED_PIN, HIGH);
+    }
+    if (animStep == 9) {
+        digitalWrite(SINGLE_LED_PIN, LOW);
+    }
+
+    if (animStep < NUM_LEDS_ON_LINE) {
+        // Фаза активности ленты — диод горит на полную
+        // analogWrite(SINGLE_LED_PIN, HIGH);
+        // digitalWrite(SINGLE_LED_PIN, HIGH);
+    } else {
+        // Фаза паузы ленты — диод плавно гаснет
+        // Рассчитываем прогресс затухания: от 255 до 0
+        int fadeSteps = NUM_LEDS - NUM_LEDS_ON_LINE; // 22 - 10 = 12 шагов
+        int currentFadeStep = animStep - NUM_LEDS_ON_LINE; // 0..11
+
+        // Линейное затухание от 255 до 0
+        int brightness = map(currentFadeStep, 0, fadeSteps, 255, 0);
+        if (brightness < 0) brightness = 0;
+
+        // analogWrite(SINGLE_LED_PIN, brightness);
+        // digitalWrite(SINGLE_LED_PIN, HIGH);
+    }
+
+    // ====================================================================
+    // ПЕРЕХОД К СЛЕДУЮЩЕМУ ШАГУ
+    // ====================================================================
+    animStep++;
+    if (animStep >= NUM_LEDS) {
+        animStep = 0;
+        // Гарантируем, что диод полностью погас перед новым циклом
+        // analogWrite(SINGLE_LED_PIN, 0);
+        digitalWrite(SINGLE_LED_PIN, LOW);
+        // delay(20); // Короткая пауза для визуальной чёткости
+    }
 }
 
 void AnimationManager::runSlowFlow() {
@@ -445,7 +514,8 @@ void AnimationManager::runTimeTravel() {
         case TTState::COMPLETE:
             FastLED.setBrightness(255);
             ttState = TTState::RUNNING;
-            setAnimation(AnimationType::SLOW_FLOW);
+            // setAnimation(AnimationType::SLOW_FLOW);
+            setAnimation(AnimationType::LOW_POWER);
             break;
 
         default:
@@ -590,7 +660,8 @@ void AnimationManager::runTimeTravelReal() {
                 FastLED.setBrightness(255);
                 ttState = TTState::RUNNING;
                 timeTravelCompleted = true;  // флаг блокировки повторной анимации если данные сенсора сохранили состояние
-                setAnimation(AnimationType::SLOW_FLOW);
+                // setAnimation(AnimationType::SLOW_FLOW);
+                setAnimation(AnimationType::LOW_POWER);
                 logger->println(F("Time travel completed. Waiting for sensor reset..."));
                 break;
 

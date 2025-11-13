@@ -187,7 +187,7 @@ void handleNormalMode(char k) {
             break;
 
         case '7':
-            // animationManager.setAnimation(AnimationManager::AnimationType::TIME_TRAVEL_REAL);
+            animationManager.setAnimation(AnimationManager::AnimationType::LOW_POWER);
             break;
 
         case '8':

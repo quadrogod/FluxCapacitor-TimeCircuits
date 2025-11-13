@@ -22,6 +22,7 @@ class AnimationManager {
 
         enum class AnimationType {
             OFF,
+            LOW_POWER,
             SLOW_FLOW,
             MIDDLE_FLOW,
             FAST_FLOW,
@@ -34,8 +35,9 @@ class AnimationManager {
 
 
         // количество AnimationType
-        AnimationConfig animations[9] = {
+        AnimationConfig animations[10] = {
             /* OFF */ { "OFF Mode activated", 0 },
+            /* LOW_POWER */ { "Low Power activated", 66.66 },
             /* SLOW_FLOW */ { "Slow flow activated", 66.66 },
             /* MIDDLE_FLOW */ { "Middle flow activated", 66.66 },
             /* FAST_FLOW */ { "Fast flow activated", 66.66 },
@@ -43,7 +45,7 @@ class AnimationManager {
             /* MOVIE_FLOW_REAL */ { "Movie flow real activated", 34.45 },
             /* RAINBOW_FLOW */ { "Rainbow flow activated", 66.66 },
             /* TIME_TRAVEL */ { "Time Travel activated", 66.66 }, // 113
-            /* TIME_TRAVEL */ { "Time Travel Real activated", 66.66 }, // 113
+            /* TIME_TRAVEL_REAL */ { "Time Travel Real activated", 66.66 }, // 113
         };
 
         AnimationManager(ISensor* sens, ILogger* log);
@@ -111,6 +113,7 @@ class AnimationManager {
         //
         void resetAnimationState();
         void runOff();
+        void runLowPower();
         void runSlowFlow();
         void runMiddleFlow();
         void runFastFlow();
