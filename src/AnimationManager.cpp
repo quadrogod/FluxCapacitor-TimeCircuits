@@ -90,6 +90,60 @@ void AnimationManager::runOff() {
     FastLED.show();
 }
 
+void AnimationManager::drawAlertLED() {
+    const int tailLength = 6;
+    const int totalSteps = NUM_LEDS_ACTIVE + tailLength;
+
+    // Включить LED в начале цикла
+    if (animStep == 0) {
+        digitalWrite(SINGLE_LED_PIN, HIGH);
+    }
+
+    // Выключить LED при входе в паузу
+    if (animStep >= totalSteps) {
+        digitalWrite(SINGLE_LED_PIN, LOW);
+    }
+}
+
+void AnimationManager::drawSlowFlow() {
+    const int tailLength = 6;
+    const uint8_t brightness[] = {60, 130, 200, 200, 130, 60};
+    const int totalSteps = NUM_LEDS_ACTIVE + tailLength;
+
+    // Если анимация завершена, делаем паузу
+    if (animStep >= totalSteps) {
+        static unsigned long pauseStart = 0;
+
+        if (pauseStart == 0) {
+            pauseStart = millis();
+        }
+
+        if (millis() - pauseStart >= 467) {
+            animStep = 0;
+            pauseStart = 0;
+        }
+        return;
+    }
+
+    // Отрисовка "хвоста"
+    for (int i = 0; i < tailLength; i++) {
+        int ledPos = animStep - i;
+
+        if (ledPos >= 0 && ledPos < NUM_LEDS_ACTIVE) {
+            int realIndex = ledPos + SKIP_LEDS;
+
+            if (useWarmColor) {
+                leds[realIndex] = CHSV(22, 200, brightness[i]);
+            } else {
+                leds[realIndex] = CHSV(28, 120, brightness[i]);
+            }
+        }
+    }
+
+    FastLED.show();
+    animStep++;
+}
+
 // void AnimationManager::runLowPower() {
 //     if (!animTimer.tick()) return;
 //
@@ -161,61 +215,10 @@ void AnimationManager::runLowPower() {
     if (!animTimer.tick()) return;
 
     FastLED.clear();
-
-    // ====================================================================
-    // КОНФИГУРАЦИЯ АНИМАЦИИ
-    // ====================================================================
-    const int tailLength = 6;
-    const uint8_t brightness[] = {60, 130, 200, 200, 130, 60};
-    const int totalSteps = NUM_LEDS_ACTIVE + tailLength;  // 9 + 6 = 15
-
-    // ====================================================================
-    // ОБРАБОТКА ПАУЗЫ
-    // ====================================================================
-    if (animStep >= totalSteps) {
-        static unsigned long pauseStart = 0;
-
-        if (pauseStart == 0) {
-            pauseStart = millis();
-            // Выключаем сигнальный LED в начале паузы
-            digitalWrite(SINGLE_LED_PIN, LOW);
-        }
-
-        // Пауза ~800 мс (как в старой версии)
-        if (millis() - pauseStart >= 800) {
-            animStep = 0;
-            pauseStart = 0;
-        }
-        return;
-    }
-
-    // ====================================================================
-    // УПРАВЛЕНИЕ СИГНАЛЬНЫМ СВЕТОДИОДОМ
-    // ====================================================================
-    if (animStep == 0) {
-        // Включаем LED в начале цикла
-        digitalWrite(SINGLE_LED_PIN, HIGH);
-    }
-
-    // ====================================================================
-    // АНИМАЦИЯ ЛЕНТЫ (как в runSlowFlow)
-    // ====================================================================
-    for (int i = 0; i < tailLength; i++) {
-        int ledPos = animStep - i;
-
-        if (ledPos >= 0 && ledPos < NUM_LEDS_ACTIVE) {
-            int realIndex = ledPos + SKIP_LEDS;
-
-            if (useWarmColor) {
-                leds[realIndex] = CHSV(22, 200, brightness[i]);
-            } else {
-                leds[realIndex] = CHSV(28, 120, brightness[i]);
-            }
-        }
-    }
-
-    FastLED.show();
-    animStep++;
+    // Управление сигнальным LED
+    drawAlertLED();
+    // Анимация ленты
+    drawSlowFlow();
 }
 
 // void AnimationManager::runSlowFlow() {
@@ -241,51 +244,7 @@ void AnimationManager::runSlowFlow() {
     if (!animTimer.tick()) return;
 
     FastLED.clear();
-
-    // Конфигурация "хвоста" анимации
-    // Структура: [тусклый, ярче, МАКС, МАКС, ярче, тусклый]
-    const int tailLength = 6;
-    const uint8_t brightness[] = {60, 130, 200, 200, 130, 60};
-
-    // Общее количество шагов: движение по активной ленте + затухание за краем
-    const int totalSteps = NUM_LEDS_ACTIVE + tailLength;
-
-    // Если анимация завершена, делаем паузу
-    if (animStep >= totalSteps) {
-        static unsigned long pauseStart = 0;
-
-        if (pauseStart == 0) {
-            pauseStart = millis();
-        }
-
-        // Пауза ~467 мс (чтобы общее время цикла = 1.47 сек, как раньше)
-        if (millis() - pauseStart >= 467) {
-            animStep = 0;
-            pauseStart = 0;
-        }
-        return;
-    }
-
-    // Отрисовка "хвоста" с затуханием
-    for (int i = 0; i < tailLength; i++) {
-        // Текущая позиция LED на ленте (может быть отрицательной или за пределами)
-        int ledPos = animStep - i;
-
-        // Проверяем, что позиция в пределах активной части ленты
-        if (ledPos >= 0 && ledPos < NUM_LEDS_ACTIVE) {
-            // Реальный индекс в массиве leds[] с учётом SKIP_LEDS
-            int realIndex = ledPos + SKIP_LEDS;
-
-            if (useWarmColor) {
-                leds[realIndex] = CHSV(22, 200, brightness[i]);
-            } else {
-                leds[realIndex] = CHSV(28, 120, brightness[i]);
-            }
-        }
-    }
-
-    FastLED.show();
-    animStep++;
+    drawSlowFlow();
 }
 
 // void AnimationManager::runMiddleFlow() {

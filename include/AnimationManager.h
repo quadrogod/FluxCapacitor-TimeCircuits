@@ -122,6 +122,9 @@ class AnimationManager {
         void runRainbowFlow();
         void runTimeTravel();
         void runTimeTravelReal();
+        //
+        void drawSlowFlow();
+        void drawAlertLED();
 };
 
 #endif //FLUXCAPACITOR_TIMECIRCUITS_ANIMATIONMANAGER_H
