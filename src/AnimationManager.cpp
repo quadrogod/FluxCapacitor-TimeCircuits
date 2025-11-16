@@ -309,6 +309,70 @@ void AnimationManager::runSlowFlow() {
 //     if (animStep >= NUM_LEDS_ON_LINE) animStep = 0;
 // }
 
+// void AnimationManager::runMiddleFlow() {
+//     if (!animTimer.tick()) return;
+//
+//     FastLED.clear();
+//
+//     // Общее количество шагов = NUM_LEDS_ACTIVE
+//     const int totalSteps = NUM_LEDS_ACTIVE;
+//
+//     // Если анимация завершена, делаем паузу
+//     if (animStep >= totalSteps) {
+//         static unsigned long pauseStart = 0;
+//
+//         if (pauseStart == 0) {
+//             pauseStart = millis();
+//         }
+//
+//         // Пауза ~67 мс (чтобы общее время цикла = 0.67 сек, как раньше)
+//         if (millis() - pauseStart >= 67) {
+//             animStep = 0;
+//             pauseStart = 0;
+//         }
+//         return;
+//     }
+//
+//     // Структура анимации: [тусклый LED] [ЯРКИЙ LED] [тусклый LED]
+//     // Центральная позиция движется по активной зоне
+//     int centerPos = animStep;
+//
+//     // Отрисовка центрального LED
+//     int centerIndex = centerPos + SKIP_LEDS;
+//     if (centerIndex >= SKIP_LEDS && centerIndex < NUM_LEDS) {
+//         if (useWarmColor) {
+//             leds[centerIndex] = CHSV(22, 200, 100);
+//         } else {
+//             leds[centerIndex] = CHSV(28, 120, 100);
+//         }
+//     }
+//
+//     // Отрисовка левого тусклого LED (если в пределах активной зоны)
+//     int leftPos = centerPos - 1;
+//     int leftIndex = leftPos + SKIP_LEDS;
+//     if (leftPos >= 0 && leftIndex >= SKIP_LEDS && leftIndex < NUM_LEDS) {
+//         if (useWarmColor) {
+//             leds[leftIndex] = CHSV(22, 200, 30);
+//         } else {
+//             leds[leftIndex] = CHSV(28, 120, 30);
+//         }
+//     }
+//
+//     // Отрисовка правого тусклого LED (если в пределах активной зоны)
+//     int rightPos = centerPos + 1;
+//     int rightIndex = rightPos + SKIP_LEDS;
+//     if (rightPos < NUM_LEDS_ACTIVE && rightIndex < NUM_LEDS) {
+//         if (useWarmColor) {
+//             leds[rightIndex] = CHSV(22, 200, 30);
+//         } else {
+//             leds[rightIndex] = CHSV(28, 120, 30);
+//         }
+//     }
+//
+//     FastLED.show();
+//     animStep++;
+// }
+
 void AnimationManager::runMiddleFlow() {
     if (!animTimer.tick()) return;
 
@@ -316,22 +380,6 @@ void AnimationManager::runMiddleFlow() {
 
     // Общее количество шагов = NUM_LEDS_ACTIVE
     const int totalSteps = NUM_LEDS_ACTIVE;
-
-    // Если анимация завершена, делаем паузу
-    if (animStep >= totalSteps) {
-        static unsigned long pauseStart = 0;
-
-        if (pauseStart == 0) {
-            pauseStart = millis();
-        }
-
-        // Пауза ~67 мс (чтобы общее время цикла = 0.67 сек, как раньше)
-        if (millis() - pauseStart >= 67) {
-            animStep = 0;
-            pauseStart = 0;
-        }
-        return;
-    }
 
     // Структура анимации: [тусклый LED] [ЯРКИЙ LED] [тусклый LED]
     // Центральная позиция движется по активной зоне
@@ -370,7 +418,12 @@ void AnimationManager::runMiddleFlow() {
     }
 
     FastLED.show();
+
+    // Переход к следующему шагу
     animStep++;
+    if (animStep >= totalSteps) {
+        animStep = 0;  // Сброс БЕЗ паузы
+    }
 }
 
 // void AnimationManager::runFastFlow() {
@@ -446,14 +499,50 @@ void AnimationManager::runFastFlow() {
 //     if (animStep >= 6) animStep = 0;
 // }
 
+// void AnimationManager::runMovieFlow() {
+//     if (!animTimer.tick()) return;
+//
+//     FastLED.clear();
+//
+//     // Movie Flow: быстрая анимация только первых 3 пар LED
+//     // Цикл: 3 шага (пары прыгают через одну позицию)
+//     const int totalSteps = 3;
+//
+//     // Сброс цикла
+//     if (animStep >= totalSteps) {
+//         animStep = 0;
+//     }
+//
+//     // Рассчитываем позицию пары (прыжок через 2 LED)
+//     int pairPos = animStep * 2;
+//
+//     // Реальные индексы с учётом SKIP_LEDS
+//     int firstIndex = pairPos + SKIP_LEDS;
+//     int secondIndex = pairPos + 1 + SKIP_LEDS;
+//
+//     // Проверяем, что оба LED в пределах активной зоны
+//     if (firstIndex >= SKIP_LEDS && secondIndex < NUM_LEDS) {
+//         if (useWarmColor) {
+//             leds[firstIndex] = CHSV(22, 200, 100);
+//             leds[secondIndex] = CHSV(22, 200, 100);
+//         } else {
+//             leds[firstIndex] = CHSV(28, 120, 100);
+//             leds[secondIndex] = CHSV(28, 120, 100);
+//         }
+//     }
+//
+//     FastLED.show();
+//     animStep++;
+// }
+
 void AnimationManager::runMovieFlow() {
     if (!animTimer.tick()) return;
 
     FastLED.clear();
 
-    // Movie Flow: быстрая анимация только первых 3 пар LED
-    // Цикл: 3 шага (пары прыгают через одну позицию)
-    const int totalSteps = 3;
+    // Movie Flow: быстрая анимация пар LED по всей активной зоне
+    // Для 9 активных LED нужно 5 шагов (4 пары + 1 одиночный)
+    const int totalSteps = 5;
 
     // Сброс цикла
     if (animStep >= totalSteps) {
@@ -467,14 +556,21 @@ void AnimationManager::runMovieFlow() {
     int firstIndex = pairPos + SKIP_LEDS;
     int secondIndex = pairPos + 1 + SKIP_LEDS;
 
-    // Проверяем, что оба LED в пределах активной зоны
-    if (firstIndex >= SKIP_LEDS && secondIndex < NUM_LEDS) {
+    // Проверяем первый LED пары
+    if (firstIndex >= SKIP_LEDS && firstIndex < NUM_LEDS) {
         if (useWarmColor) {
             leds[firstIndex] = CHSV(22, 200, 100);
-            leds[secondIndex] = CHSV(22, 200, 100);
         } else {
             leds[firstIndex] = CHSV(28, 120, 100);
-            leds[secondIndex] = CHSV(28, 120, 100);
+        }
+
+        // Проверяем второй LED пары (может не существовать для последнего шага)
+        if (secondIndex < NUM_LEDS) {
+            if (useWarmColor) {
+                leds[secondIndex] = CHSV(22, 200, 100);
+            } else {
+                leds[secondIndex] = CHSV(28, 120, 100);
+            }
         }
     }
 

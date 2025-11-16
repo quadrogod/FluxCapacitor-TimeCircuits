@@ -45,6 +45,10 @@ void handleSerial() {
         case '8':
             animationManager.setAnimation(AnimationManager::AnimationType::RAINBOW_FLOW);
             break;
+
+        case '0':
+            animationManager.setAnimation(AnimationManager::AnimationType::OFF);
+            break;
             
         default:
             Serial.println(F("Unknown command"));
