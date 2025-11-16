@@ -40,8 +40,14 @@
 
 // ----------------- LEDS -----------------
 // #define NUM_LEDS   22
-#define NUM_LEDS   22
-#define NUM_LEDS_ON_LINE   10
+// #define NUM_LEDS   22
+// #define NUM_LEDS_ON_LINE   10
+#define NUM_LEDS 11                 // Физическое количество LED в ленте
+#define SKIP_LEDS 1                 // Количество пропускаемых LED с начала ленты
+#define NUM_LEDS_ACTIVE (NUM_LEDS - SKIP_LEDS)  // Активных LED: 10 - 1 = 9
+
+#define NUM_LEDS_ON_LINE 10 // @todo: надо удалить эту переменную в будущем
+
 #define DATA_RING_PIN   11
 // #define CLOCK_PIN  13
 #define LED_POWER_LIMIT_MA 500

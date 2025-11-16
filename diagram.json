@@ -24,21 +24,21 @@
       "id": "ring1",
       "top": -241.66,
       "left": 115.24,
-      "attrs": { "pixels": "10" }
+      "attrs": { "pixels": "11" }
     },
     {
       "type": "wokwi-led-ring",
       "id": "ring2",
       "top": -241.66,
       "left": 316.84,
-      "attrs": { "pixels": "10" }
+      "attrs": { "pixels": "11" }
     },
     {
       "type": "wokwi-led-ring",
       "id": "ring3",
       "top": -59.26,
       "left": 220.84,
-      "attrs": { "pixels": "10" }
+      "attrs": { "pixels": "11" }
     },
     { "type": "wokwi-ir-receiver", "id": "ir1", "top": -337.35, "left": -222.58, "attrs": {} },
     { "type": "wokwi-ir-remote", "id": "remote1", "top": -336, "left": -393.6, "attrs": {} },
